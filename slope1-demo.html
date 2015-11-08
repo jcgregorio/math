@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>slope-1 demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="/res/imp/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel=import href="/res/imp/bower_components/polymer/polymer.html">
+  <link rel=import href="slope1.html">
+  <style is="custom-style">
+    body {
+      font-family: sans-serif;
+    }
+
+    slope-1 {
+      display: block;
+      margin: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h2>Assessment</h2>
+  <slope-1></slope-1>
+  <h2>Practice</h2>
+  <slope-1 practice></slope-1>
+  <pre id=evt></pre>
+  <script type="text/javascript" charset="utf-8">
+    document.body.addEventListener('submit-response', function(e) {
+      document.getElementById('evt').textContent = 'submit-response: ' + JSON.stringify(e.detail);
+    });
+    document.body.addEventListener('continue', function(e) {
+      document.getElementById('evt').textContent = 'continue: ' + JSON.stringify(e.detail);
+    });
+  </script>
+</body>
+</html>
