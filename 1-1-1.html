@@ -1,11 +1,5 @@
-<!-- The <slope-1> custom element declaration.
-
-  Attributes:
-  Events:
-  Methods:
--->
-
-<dom-module id="slope-1">
+<link rel="import" href="mb.html">
+<dom-module id="e-1-1-1">
   <style>
     input {
       padding: 0.2em;
@@ -23,11 +17,11 @@
       What is the slope <input type=text name=m value="" id=m size=1 maxlength=1 inputmode=numeric> and the
       y-intercept <input type=text name=b value="" id=b size=1 maxlength=1 inputmode=numeric>?
     </p>
-    <button on-click=_submit>Submit</button>
+    <button id=submit on-click=_submit>Submit</button>
     <p id=incorrect class=hide>
       That is incorrect.
       <template is="dom-if" if="{{practice}}">
-        The slope is {{b}} and the y-intercept is {{m}}.
+        The slope is {{m}} and the y-intercept is {{b}}.
       </template>
     </p>
     <p id=correct class=hide>
@@ -39,15 +33,11 @@
 
 <script>
   Polymer({
-    is: "slope-1",
-
-    rint: function(min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
-    },
+    is: "e-1-1-1",
 
     ready: function() {
-      this.set('b', this.rint(2, 9))
-      this.set('m', this.rint(2, 9))
+      this.b = mb.rint(2, 9);
+      this.m = mb.rint(2, 9);
     },
 
     _submit: function() {
@@ -61,7 +51,12 @@
         this.$.correct.classList.remove('hide');
       } else {
         this.$.incorrect.classList.remove('hide');
+        // TODO Some flashy animation that correlates the answers with
+        // the problem.
       }
+      this.$.m.disabled = true;
+      this.$.b.disabled = true;
+      this.$.submit.disabled = true;
       this.$.continue.classList.remove('hide');
     },
 
@@ -72,14 +67,6 @@
     },
 
     properties: {
-      m: {
-        type: Number,
-        value: 2,
-      },
-      b: {
-        type: Number,
-        value: 2,
-      },
       practice: {
         type: Boolean,
         value: false,
