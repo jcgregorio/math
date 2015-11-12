@@ -1,33 +1,27 @@
 <link rel="import" href="mb.html">
+<link rel="import" href="problem.html">
 <dom-module id="e-1-1-2">
   <style>
     input {
       padding: 0.2em;
       text-align: center;
     }
-    .hide {
-      display: none;
-    }
   </style>
   <template>
-    <p>
-    y = {{m}}x{{b}}
-    </p>
-    <p>
-      What is the slope <input type=text name=m value="" id=m size=1 maxlength=1 inputmode=numeric> and the
-      y-intercept <input type=text name=b value="" id=b size=2 maxlength=2 inputmode=numeric>?
-    </p>
-    <button on-click=_submit>Submit</button>
-    <p id=incorrect class=hide>
-      That is incorrect.
-      <template is="dom-if" if="{{practice}}">
+    <problem-wrapper>
+      <div class=statement>
+        <p>
+          y = {{m}}x{{b}}
+        </p>
+        <p>
+          What is the slope <input type=text name=m value="" id=m size=1 maxlength=1 inputmode=numeric> and the
+          y-intercept <input type=text name=b value="" id=b size=2 maxlength=2 inputmode=numeric>?
+        </p>
+      </div>
+      <div class=correction>
         The slope is {{m}} and the y-intercept is {{b}}.
-      </template>
-    </p>
-    <p id=correct class=hide>
-      That is correct!
-    </p>
-    <button id=continue class=hide on-click=_continue>Continue</button>
+      </div>
+    </problem-wrapper>
   </template>
 </dom-module>
 
@@ -35,55 +29,14 @@
   Polymer({
     is: "e-1-1-2",
 
-    _rint: function(min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
-    },
-
     ready: function() {
-      this.set('b', -this._rint(2, 9))
-      this.set('m', this._rint(2, 9))
+      this.b = -mb.rint(2, 9);
+      this.m = mb.rint(2, 9);
     },
 
-    _submit: function() {
-      var correct = +this.$.m.value == this.m && +this.$.b.value == this.b;
-      this.fire('submit-response', {
-        correct: correct,
-        name: this.is,
-        bubbles: true,
-      });
-      if (correct) {
-        this.$.correct.classList.remove('hide');
-      } else {
-        this.$.incorrect.classList.remove('hide');
-        // TODO Some flashy animation that correlates the answers with
-        // the problem.
-      }
-      this.$.m.disabled = true;
-      this.$.b.disabled = true;
-      this.$.submit.disabled = true;
-      this.$.continue.classList.remove('hide');
-    },
+    isCorrect: function () {
+      return +this.$.m.value == this.m && +this.$.b.value == this.b;
+    };
 
-    _continue: function() {
-      this.fire('continue', {
-        bubbles: true,
-      });
-    },
-
-    properties: {
-      m: {
-        type: Number,
-        value: 2,
-      },
-      b: {
-        type: Number,
-        value: 2,
-      },
-      practice: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true,
-      },
-    },
   });
 </script>

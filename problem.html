@@ -1,0 +1,66 @@
+<!-- The <problem-wrapper> custom element declaration.
+
+  Attributes:
+  Events:
+  Methods:
+-->
+
+<dom-module id="problem-wrapper">
+  <style>
+    .hide {
+      display: none;
+    }
+    #correct,
+    #incorrect {
+      padding: 1em;
+    }
+  </style>
+  <template>
+    <content id=statement select=".statement"></content> <button id=submit on-click=_submit>Submit</button>
+    <div id=incorrect class=hide>
+      That is incorrect.
+      <template is="dom-if" if="{{practice}}">
+        <content select=".correction"></content>
+      </template>
+    </div>
+    <div id=correct class=hide>
+      That is correct!
+    </div>
+    <button id=continue class=hide on-click=_continue>Continue</button>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "problem-wrapper",
+
+    attached: function() {
+      this.practice = this.parentElement.dataset['practice'] || false;
+    },
+
+    _submit: function() {
+      var correct = this.parentElement.isCorrect();
+      this.fire('submit-response', {
+        correct: correct,
+        name: this.is,
+        bubbles: true,
+      });
+      if (correct) {
+        this.$.correct.classList.remove('hide');
+      } else {
+        this.$.incorrect.classList.remove('hide');
+      }
+      mb.disableAll(Polymer.dom(this.$.statement).getDistributedNodes());
+
+      this.$.submit.disabled = true;
+      this.$.continue.classList.remove('hide');
+    },
+
+    _continue: function() {
+      this.fire('continue', {
+        bubbles: true,
+      });
+    },
+
+  });
+</script>

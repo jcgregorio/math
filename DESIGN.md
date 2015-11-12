@@ -40,6 +40,37 @@ Does 1.2 implement slots? If not we need to add impl for that.
       });
     </script>
 
+OR
+
+    <dom-module id="e-1-1-1">
+      <template>
+        <problem>
+          <div class=statment>
+            <p>y={{m}}x+{{b}}</p>
+            <p>What is the slope <number id=m></number> and the y-intercept <number id=b></number></p>
+          </div>
+          <div class=correction>
+            The slope is {{m}} and the y-intercept is {{b}}.
+          </div>
+        </problem>
+      </template>
+    </dom-module>
+    <script>
+      Polymer({
+        is: "e-1-1-1",
+
+        ready: function() {
+          this.b = this._rint(2, 9);
+          this.m = this._rint(2, 9);
+        },
+
+        _isCorrect: function() {
+          return +this.$.m.value == this.m && +this.$.b.value == this.b;
+        },
+      });
+    </script>
+
+
 Need <correction> and <number> custom elements.
 Need a common lib with rint() and near().
 Need a behavior with common flows.
