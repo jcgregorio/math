@@ -6,9 +6,6 @@
       padding: 0.2em;
       text-align: center;
     }
-    .correction {
-      padding: 2em;
-    }
   </style>
   <template>
     <problem-wrapper>
@@ -33,8 +30,8 @@
     is: "e-1-1-1",
 
     ready: function() {
-      this.b = mb.rint(2, 9);
       this.m = mb.rint(2, 9);
+      this.b = mb.rint(2, 9);
     },
 
     isCorrect: function() {
