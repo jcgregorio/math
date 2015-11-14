@@ -43,6 +43,13 @@ window.mb = window.mb || function() {
     return Math.floor(Math.random() * (max - min)) + min;
   };
 
+  mb.plusminus = function() {
+    if (Math.random() > 0.5) {
+      return 1;
+    } else {
+      return -1;
+    }
+  };
 
   mb.disableAll = function(children) {
     for (var i = children.length - 1; i >= 0; i--) {

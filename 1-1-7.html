@@ -1,0 +1,42 @@
+<link rel="import" href="mb.html">
+<link rel="import" href="problem.html">
+<link rel="import" href="number-input.html">
+<dom-module id="e-1-1-7">
+  <style>
+    input {
+      padding: 0.2em;
+      text-align: center;
+    }
+  </style>
+  <template>
+    <problem-wrapper>
+      <div class=statement>
+        <p>
+          y = {{b}}
+        </p>
+        <p>
+          What is the slope <number-input id=m size=2></number-input> and the y-intercept <number-input id=b size=2>?
+        </p>
+      </div>
+      <div class=correction>
+        The slope is {{m}} and the y-intercept is {{b}}.
+      </div>
+    </problem-wrapper>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "e-1-1-7",
+
+    ready: function() {
+      this.m = 0;
+      this.b = mb.plusminus() * mb.rint(2, 9);
+    },
+
+    isCorrect: function() {
+      return this.$.m.asNumber() == this.m && +this.$.b.asNumber() == this.b;
+    },
+
+  });
+</script>
