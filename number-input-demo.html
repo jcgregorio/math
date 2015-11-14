@@ -1,0 +1,34 @@
+<html>
+<head>
+  <title>number-input demo</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="/res/imp/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel=import href="/res/imp/bower_components/polymer/polymer.html">
+  <link rel=import href="mb.html">
+  <link rel=import href="number-input.html">
+  <style is="custom-style">
+    body {
+      font-family: sans-serif;
+    }
+
+    number-input {
+      display: block;
+      margin: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h2>Size 1</h2>
+  <number-input id=one size=1></number-input>
+  <h2>Size 3</h2>
+  <number-input id=three size=3></number-input>
+  <div id=evt></div>
+  <script type="text/javascript" charset="utf-8">
+    document.body.addEventListener('change', function(e) {
+      $$$('#evt').textContent = $$$('#one').asNumber() + " " + $$$('#three').asNumber();
+    });
+  </script>
+</body>
+</html>

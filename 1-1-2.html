@@ -1,5 +1,6 @@
 <link rel="import" href="mb.html">
 <link rel="import" href="problem.html">
+<link rel="import" href="number-input.html">
 <dom-module id="e-1-1-2">
   <style>
     input {
@@ -14,8 +15,7 @@
           y = {{m}}x{{b}}
         </p>
         <p>
-          What is the slope <input type=text name=m value="" id=m size=1 maxlength=1 inputmode=numeric> and the
-          y-intercept <input type=text name=b value="" id=b size=2 maxlength=2 inputmode=numeric>?
+          What is the slope <number-input id=m size=2></number-input> and the y-intercept <number-input id=b size=2>?
         </p>
       </div>
       <div class=correction>
@@ -35,7 +35,7 @@
     },
 
     isCorrect: function () {
-      return +this.$.m.value == this.m && +this.$.b.value == this.b;
+      return this.$.m.asNumber() == this.m && this.$.b.asNumber() == this.b;
     },
 
   });

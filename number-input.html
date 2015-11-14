@@ -1,0 +1,36 @@
+<!-- The <number-input> custom element declaration.
+
+  Attributes:
+  Events:
+  Methods:
+-->
+
+<dom-module id="number-input">
+  <style>
+    input {
+      padding: 0.2em;
+      text-align: center;
+    }
+  </style>
+  <template>
+    <input type=text value="" id=input size$="{{size}}" maxlength$="{{size}}" inputmode=numeric>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "number-input",
+
+    asNumber: function() {
+      return +this.$.input.value;
+    },
+
+    properties: {
+      size: {
+        type: Number,
+        value: 2,
+      },
+    },
+  });
+</script>
+
