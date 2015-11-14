@@ -5,6 +5,7 @@
   Methods:
 -->
 
+<link rel="import" href="/res/imp/bower_components/paper-button/paper-button.html">
 <dom-module id="problem-wrapper">
   <style>
     .hide {
@@ -16,7 +17,7 @@
     }
   </style>
   <template>
-    <content id=statement select=".statement"></content> <button id=submit on-click=_submit>Submit</button>
+    <content id=statement select=".statement"></content> <paper-button raised id=submit on-click=_submit>Submit</paper-button>
     <div id=incorrect class=hide>
       That is incorrect.
       <template is="dom-if" if="{{practice}}">
@@ -26,7 +27,7 @@
     <div id=correct class=hide>
       That is correct!
     </div>
-    <button id=continue class=hide on-click=_continue>Continue</button>
+    <paper-button raised id=continue class=hide on-click=_continue>Continue</paper-button>
   </template>
 </dom-module>
 
