@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Math Server</title>
+
+    {{template "header.html" .}}
+
+    <style is="custom-style" type="text/css" media="screen">
+      :root {
+        --default-primary-color: #1f78b4;
+      }
+    </style>
+
+    <style type="text/css" media="screen">
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+      }
+      login-sk {
+        margin-left: auto;
+      }
+      login-sk a {
+        color: white;
+      }
+      a {
+        color: #1f78b4;
+        font-weight: bold;
+      }
+      #mainContainer {
+        background: white;
+        padding: 2em 1em;
+      }
+      paper-toast {
+        margin: 2em;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      paper-header-panel {
+        height: 100%;
+      }
+      #refresh,
+      #spinner {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body class="fullbleed layout vertical">
+    <paper-header-panel mode=scroll>
+      {{template "titlebar.html" .}}
+
+      <e-1-1-1></e-1-1-1>
+
+      <error-toast-sk></error-toast-sk>
+    </paper-header-panel>
+
+    <script type="text/javascript" charset="utf-8">
+    </script>
+  </body>
+</html>

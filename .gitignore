@@ -1,3 +1,7 @@
-res/imp/bower_components/
+res/imp/bower_components
 res/imp/res/
+res/vul/
+res/js/core.js
+res/js/core-debug.js
 node_modules/
+third_party/

@@ -1,0 +1,16 @@
+{
+  "name": "mathserv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Serve the math book.",
+  "main": "",
+  "scripts": {},
+  "author": "",
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "bower": "^1.6.5",
+    "native-promise-only": "~0.7.8-a",
+    "uglify-js": "~2.4.15",
+    "vulcanize": "^1.14.0"
+  }
+}

@@ -1,5 +1,3 @@
-<script type="text/javascript" charset="utf-8">
-
 /**
  * $$ returns a real JS array of DOM elements that match the CSS query selector.
  *
@@ -65,4 +63,3 @@ window.mb = window.mb || function() {
 
   return mb;
 }();
-</script>
