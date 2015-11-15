@@ -61,5 +61,60 @@ window.mb = window.mb || function() {
     }
   };
 
+  // Returns a Promise that uses XMLHttpRequest to make a request with the given
+  // method to the given URL with the given headers and body.
+  mb.request = function(method, url, body, headers) {
+    // Return a new promise.
+    return new Promise(function(resolve, reject) {
+      // Do the usual XHR stuff
+      var req = new XMLHttpRequest();
+      req.open(method, url);
+      if (headers) {
+        for (var k in headers) {
+          req.setRequestHeader(k, headers[k]);
+        }
+      }
+
+      req.onload = function() {
+        // This is called even on 404 etc
+        // so check the status
+        if (req.status == 200) {
+          // Resolve the promise with the response text
+          resolve(req.response);
+        } else {
+          // Otherwise reject with the status text
+          // which will hopefully be a meaningful error
+          reject(req.response);
+        }
+      };
+
+      // Handle network errors
+      req.onerror = function() {
+        reject(Error("Network Error"));
+      };
+
+      // Make the request
+      req.send(body);
+    });
+  }
+
+  // Returns a Promise that uses XMLHttpRequest to make a request to the given URL.
+  mb.get = function(url) {
+    return mb.request('GET', url);
+  }
+
+
+  // Returns a Promise that uses XMLHttpRequest to make a POST request to the
+  // given URL with the given JSON body.
+  mb.post = function(url, body) {
+    return mb.request('POST', url, body, {"Content-Type": "application/json"});
+  }
+
+  // Returns a Promise that uses XMLHttpRequest to make a DELETE request to the
+  // given URL.
+  mb.delete = function(url) {
+    return mb.request('DELETE', url);
+  }
+
   return mb;
 }();

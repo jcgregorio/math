@@ -37,14 +37,15 @@ var (
 
 // flags
 var (
-	port           = flag.String("port", ":8000", "HTTP service address (e.g., ':8000')")
+	port           = flag.String("port", ":8000", "HTTP(S) service address (e.g., ':8000')")
+	httpPort       = flag.String("http_port", ":8001", "HTTP service address (e.g., ':8000'), only used for redirects, and only if certChainFile is set.")
 	local          = flag.Bool("local", false, "Running locally if true. As opposed to in production.")
 	graphiteServer = flag.String("graphite_server", "localhost:2003", "Where is Graphite metrics ingestion server running.")
 	doOauth        = flag.Bool("oauth", true, "Run through the OAuth 2.0 flow on startup, otherwise use a GCE service account.")
 	oauthCacheFile = flag.String("oauth_cache_file", "my_token_store.data", "Path to the file where to cache cache the oauth credentials.")
 	resourcesDir   = flag.String("resources_dir", "", "The directory to find templates, JS, and CSS files. If blank the current directory will be used.")
 
-	certChainFile = flag.String("cert_chain_file", "", "The file name of the TLS certificate chain.")
+	certChainFile = flag.String("cert_chain_file", "", "The file name of the TLS certificate chain. If not set then the server only serves HTTP.")
 	keyFile       = flag.String("key_file", "", "The file name of the TLS certificate key.")
 )
 
@@ -86,6 +87,10 @@ func makeResourceHandler() func(http.ResponseWriter, *http.Request) {
 	}
 }
 
+func redirHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "https://mathinate.com", 302)
+}
+
 func main() {
 	defer common.LogPanic()
 	common.InitWithMetrics("mathserv", graphiteServer)
@@ -93,16 +98,16 @@ func main() {
 
 	// By default use a set of credentials setup for localhost access.
 	var cookieSalt = "notverysecret"
-	var clientID = "31977622648-1873k0c1e5edaka4adpv1ppvhr5id3qm.apps.googleusercontent.com"
-	var clientSecret = "cw0IosPu4yjaG2KWmppj2guj"
+	var clientID = "952643138919-5a692pfevie766aiog15io45kjpsh33v.apps.googleusercontent.com"
+	var clientSecret = "QQfqRYU1ELkds90ku8xlIGl1"
 	var redirectURL = fmt.Sprintf("http://localhost%s/oauth2callback/", *port)
 	if !*local {
 		cookieSalt = metadata.Must(metadata.ProjectGet(metadata.COOKIESALT))
 		clientID = metadata.Must(metadata.ProjectGet(metadata.CLIENT_ID))
 		clientSecret = metadata.Must(metadata.ProjectGet(metadata.CLIENT_SECRET))
-		redirectURL = "http://localhost:8000/oauth2callback/"
+		redirectURL = "https://mathinate.com/oauth2callback/"
 	}
-	login.Init(clientID, clientSecret, redirectURL, cookieSalt, login.DEFAULT_SCOPE, login.DEFAULT_DOMAIN_WHITELIST, *local)
+	login.Init(clientID, clientSecret, redirectURL, cookieSalt, login.DEFAULT_SCOPE, "", *local)
 
 	r := mux.NewRouter()
 	r.PathPrefix("/res/").HandlerFunc(util.MakeResourceHandler(*resourcesDir))
@@ -113,6 +118,11 @@ func main() {
 	http.Handle("/", util.LoggingGzipRequestResponse(r))
 	glog.Infoln("Ready to serve.")
 	if *certChainFile != "" {
+		go func() {
+			redir := mux.NewRouter()
+			redir.HandleFunc("/", redirHandler)
+			glog.Fatal(http.ListenAndServe(*httpPort, redir))
+		}()
 		glog.Fatal(http.ListenAndServeTLS(*port, *certChainFile, *keyFile, nil))
 	} else {
 		glog.Fatal(http.ListenAndServe(*port, nil))
