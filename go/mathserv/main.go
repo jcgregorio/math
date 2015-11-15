@@ -43,6 +43,9 @@ var (
 	doOauth        = flag.Bool("oauth", true, "Run through the OAuth 2.0 flow on startup, otherwise use a GCE service account.")
 	oauthCacheFile = flag.String("oauth_cache_file", "my_token_store.data", "Path to the file where to cache cache the oauth credentials.")
 	resourcesDir   = flag.String("resources_dir", "", "The directory to find templates, JS, and CSS files. If blank the current directory will be used.")
+
+	certChainFile = flag.String("cert_chain_file", "", "The file name of the TLS certificate chain.")
+	keyFile       = flag.String("key_file", "", "The file name of the TLS certificate key.")
 )
 
 func loadTemplates() {
@@ -109,5 +112,9 @@ func main() {
 	r.HandleFunc("/oauth2callback/", login.OAuth2CallbackHandler)
 	http.Handle("/", util.LoggingGzipRequestResponse(r))
 	glog.Infoln("Ready to serve.")
-	glog.Fatal(http.ListenAndServe(*port, nil))
+	if *certChainFile != "" {
+		glog.Fatal(http.ListenAndServeTLS(*port, *certChainFile, *keyFile, nil))
+	} else {
+		glog.Fatal(http.ListenAndServe(*port, nil))
+	}
 }
