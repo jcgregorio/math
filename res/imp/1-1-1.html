@@ -8,7 +8,7 @@
     }
   </style>
   <template>
-    <problem-wrapper>
+    <problem-wrapper practice="{{practice}}">
       <div class=statement>
         <p>
           y = {{m}}x+{{b}}
@@ -27,6 +27,8 @@
 <script>
   Polymer({
     is: "e-1-1-1",
+
+    behaviors: [mb.PracticeBehavior],
 
     ready: function() {
       this.m = mb.rint(2, 9);

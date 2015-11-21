@@ -116,5 +116,15 @@ window.mb = window.mb || function() {
     return mb.request('DELETE', url);
   }
 
+  mb.PracticeBehavior = {
+    properties: {
+      practice: {
+        type: Boolean,
+        value: false,
+      }
+    }
+  }
+
+
   return mb;
 }();

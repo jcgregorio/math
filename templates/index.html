@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Math Server</title>
+    <title>Mathinate</title>
 
     {{template "header.html" .}}
 
@@ -16,10 +16,10 @@
         font-family: Arial, sans-serif;
         font-size: 15px;
       }
-      login-sk {
+      login-mb {
         margin-left: auto;
       }
-      login-sk a {
+      login-mb a {
         color: white;
       }
       a {
@@ -50,15 +50,22 @@
     <paper-header-panel mode=scroll>
       {{template "titlebar.html" .}}
 
-      <e-1-1-1></e-1-1-1>
-      <e-1-1-2></e-1-1-2>
-      <e-1-1-3></e-1-1-3>
-      <e-1-1-4></e-1-1-4>
+      <div id=problem>
+        <e-1-1-1 practice></e-1-1-1>
+      </div>
 
-      <error-toast-sk></error-toast-sk>
     </paper-header-panel>
 
     <script type="text/javascript" charset="utf-8">
+      (function () {
+        var problem = $$$('#problem');
+        document.body.addEventListener('continue', function(e) {
+          mb.clearChildren(problem);
+          var ele = document.createElement('e-1-1-' + mb.rint(1, 7));
+          ele.setAttribute('practice', true);
+          problem.appendChild(ele);
+        });
+      })();
     </script>
   </body>
 </html>

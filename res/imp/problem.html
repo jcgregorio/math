@@ -35,8 +35,12 @@
   Polymer({
     is: "problem-wrapper",
 
-    attached: function() {
-      this.practice = this.parentElement.dataset['practice'] || false;
+    properties: {
+      practice: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true,
+      },
     },
 
     _submit: function() {

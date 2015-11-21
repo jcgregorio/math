@@ -28,6 +28,8 @@
   Polymer({
     is: "e-1-1-2",
 
+    behaviors: [mb.PracticeBehavior],
+
     ready: function() {
       this.b = -mb.rint(2, 9);
       this.m = mb.rint(2, 9);
