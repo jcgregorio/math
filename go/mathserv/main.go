@@ -41,8 +41,6 @@ var (
 	httpPort       = flag.String("http_port", ":8001", "HTTP service address (e.g., ':8000'), only used for redirects, and only if certChainFile is set.")
 	local          = flag.Bool("local", false, "Running locally if true. As opposed to in production.")
 	graphiteServer = flag.String("graphite_server", "localhost:2003", "Where is Graphite metrics ingestion server running.")
-	doOauth        = flag.Bool("oauth", true, "Run through the OAuth 2.0 flow on startup, otherwise use a GCE service account.")
-	oauthCacheFile = flag.String("oauth_cache_file", "my_token_store.data", "Path to the file where to cache cache the oauth credentials.")
 	resourcesDir   = flag.String("resources_dir", "", "The directory to find templates, JS, and CSS files. If blank the current directory will be used.")
 
 	certChainFile = flag.String("cert_chain_file", "", "The file name of the TLS certificate chain. If not set then the server only serves HTTP.")

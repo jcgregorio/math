@@ -1,0 +1,17 @@
+[Unit]
+Description=Mathinate systemd monitoring UI and pull service.
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/mathserv \
+  --log_dir=/var/log/logserver \
+  --resources_dir=/usr/local/share/mathserv/ \
+  --graphite_server=
+Restart=always
+User=root
+Group=root
+LimitNOFILE=10000
+
+[Install]
+WantedBy=multi-user.target
