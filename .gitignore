@@ -5,3 +5,5 @@ res/js/core.js
 res/js/core-debug.js
 node_modules/
 third_party/
+**/client_secret.json
+**/service-account.json
