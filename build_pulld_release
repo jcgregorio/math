@@ -1,0 +1,31 @@
+#!/bin/bash
+# Builds and uploads a debian package for pulld .
+APPNAME=pulld
+SYSTEMD=${APPNAME}.service
+SYSTEMD_TIMER=""
+DESCRIPTION="Application to pull push-controlled applications. Also allows viewing those applications status."
+
+pushd ${GOPATH}/src/go.skia.org/infra/pulld
+rm res/vul/elements.html
+make
+popd
+
+# Copy files into the right locations in ${ROOT}.
+copy_release_files()
+{
+INSTALL="sudo install -D --verbose --backup=none --group=root --owner=root"
+INSTALL_DIR="sudo install -d --verbose --backup=none --group=root --owner=root"
+BASE=${GOPATH}/src/go.skia.org/infra/pulld
+${INSTALL} --mode=755 -T ${GOPATH}/bin/${APPNAME}  ${ROOT}/usr/local/bin/${APPNAME}
+
+${INSTALL} --mode=644 -T ./sys/${APPNAME}.service  ${ROOT}/etc/systemd/system/${APPNAME}.service
+
+${INSTALL} --mode=644 -T ${BASE}/res/vul/elements.html   ${ROOT}/usr/local/share/pulld/res/vul/elements.html
+${INSTALL} --mode=644 -T ${BASE}/res/js/core.js          ${ROOT}/usr/local/share/pulld/res/js/core.js
+${INSTALL} --mode=644 -T ${BASE}/templates/header.html   ${ROOT}/usr/local/share/pulld/templates/header.html
+${INSTALL} --mode=644 -T ${BASE}/templates/index.html    ${ROOT}/usr/local/share/pulld/templates/index.html
+${INSTALL} --mode=644 -T ${BASE}/templates/titlebar.html ${ROOT}/usr/local/share/pulld/templates/titlebar.html
+${INSTALL_DIR} --mode=777                                ${ROOT}/var/${APPNAME}
+}
+
+source ./release.sh
