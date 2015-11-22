@@ -7,7 +7,7 @@ set -x
 PROJECT_ID=heroic-muse-88515
 INSTANCE_NAME=mathinate
 IP_ADDRESS=104.154.85.138
-MACHINE_TYPE=n1-standard-1
+MACHINE_TYPE=f1-micro
 SOURCE_SNAPSHOT=mathinate-systemd-snapshot
 SCOPES='https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/compute.readonly'
 ZONE=us-central1-f
