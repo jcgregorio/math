@@ -83,26 +83,31 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AttemptLoadCertFromMetadata() {
-	if *certChainFile != "" {
+	if *certChainFile == "" {
 		// Try loading from GCE project level metadata.
 		certChainContents, err := metadata.ProjectGet("ca_cert_chain")
 		if err != nil {
+			glog.Errorf("Failed to load ca_cert_chain from metadata: %s", err)
 			return
 		}
 		keyContents, err := metadata.ProjectGet("ca_key")
 		if err != nil {
+			glog.Errorf("Failed to load ca_key from metadata: %s", err)
 			return
 		}
 		fullCertChainFilename := filepath.Join(*workDir, CA_CERT_CHAIN_FILENAME)
 		fullKeyFilename := filepath.Join(*workDir, CA_KEY_FILENAME)
 		if err := ioutil.WriteFile(fullCertChainFilename, []byte(certChainContents), 0600); err != nil {
+			glog.Errorf("Failed to write %s: %s", fullCertChainFilename, err)
 			return
 		}
 		if err := ioutil.WriteFile(fullKeyFilename, []byte(keyContents), 0600); err != nil {
+			glog.Errorf("Failed to write %s: %s", fullKeyFilename, err)
 			return
 		}
 		*keyFile = fullKeyFilename
 		*certChainFile = fullCertChainFilename
+		glog.Infof("SUCCESS: Loaded cert from metadata.")
 	}
 }
 
@@ -135,6 +140,7 @@ func main() {
 	glog.Infoln("Ready to serve.")
 
 	if *certChainFile != "" {
+		glog.Infof("Serving TLS")
 		go func() {
 			redir := mux.NewRouter()
 			redir.HandleFunc("/", redirHandler)
@@ -142,6 +148,7 @@ func main() {
 		}()
 		glog.Fatal(http.ListenAndServeTLS(*port, *certChainFile, *keyFile, nil))
 	} else {
+		glog.Infof("Only serving HTTP")
 		glog.Fatal(http.ListenAndServe(*port, nil))
 	}
 }
