@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"path/filepath"
 	"runtime"
@@ -16,19 +17,10 @@ import (
 	"go.skia.org/infra/go/util"
 )
 
-// Server is used in PushConfig.
-type Server struct {
-	AppNames []string
-}
-
-// PushConfig is the configuration of the application.
-//
-// It is a list of servers (by GCE domain name) and the list
-// of apps that are allowed to be installed on them. It is
-// loaded from *config_filename in toml format.
-type PushConfig struct {
-	Servers map[string]Server
-}
+const (
+	CA_CERT_CHAIN_FILENAME = "caCertChain.pem"
+	CA_KEY_FILENAME        = "caKey.pem"
+)
 
 var (
 	// indexTemplate is the main index.html page we serve.
@@ -42,6 +34,7 @@ var (
 	local          = flag.Bool("local", false, "Running locally if true. As opposed to in production.")
 	graphiteServer = flag.String("graphite_server", "localhost:2003", "Where is Graphite metrics ingestion server running.")
 	resourcesDir   = flag.String("resources_dir", "", "The directory to find templates, JS, and CSS files. If blank the current directory will be used.")
+	workDir        = flag.String("work_dir", "/tmp", "Directory to keep scratch and work files.")
 
 	certChainFile = flag.String("cert_chain_file", "", "The file name of the TLS certificate chain. If not set then the server only serves HTTP.")
 	keyFile       = flag.String("key_file", "", "The file name of the TLS certificate key.")
@@ -89,6 +82,30 @@ func redirHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "https://mathinate.com", 302)
 }
 
+func AttemptLoadCertFromMetadata() {
+	if *certChainFile != "" {
+		// Try loading from GCE project level metadata.
+		certChainContents, err := metadata.ProjectGet("ca_cert_chain")
+		if err != nil {
+			return
+		}
+		keyContents, err := metadata.ProjectGet("ca_key")
+		if err != nil {
+			return
+		}
+		fullCertChainFilename := filepath.Join(*workDir, CA_CERT_CHAIN_FILENAME)
+		fullKeyFilename := filepath.Join(*workDir, CA_KEY_FILENAME)
+		if err := ioutil.WriteFile(fullCertChainFilename, []byte(certChainContents), 0600); err != nil {
+			return
+		}
+		if err := ioutil.WriteFile(fullKeyFilename, []byte(keyContents), 0600); err != nil {
+			return
+		}
+		*keyFile = fullKeyFilename
+		*certChainFile = fullCertChainFilename
+	}
+}
+
 func main() {
 	defer common.LogPanic()
 	common.InitWithMetrics("mathserv", graphiteServer)
@@ -114,7 +131,9 @@ func main() {
 	r.HandleFunc("/logout/", login.LogoutHandler)
 	r.HandleFunc("/oauth2callback/", login.OAuth2CallbackHandler)
 	http.Handle("/", util.LoggingGzipRequestResponse(r))
+	AttemptLoadCertFromMetadata()
 	glog.Infoln("Ready to serve.")
+
 	if *certChainFile != "" {
 		go func() {
 			redir := mux.NewRouter()
